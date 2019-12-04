@@ -51,6 +51,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -59,11 +61,14 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.TreeMap;
 
+
 import com.mushroom_classifier.myapp.env.ImageUtils;
 import com.mushroom_classifier.myapp.env.Logger;
 import com.mushroom_classifier.myapp.tflite.Classifier.Device;
 import com.mushroom_classifier.myapp.tflite.Classifier.Model;
 import com.mushroom_classifier.myapp.tflite.Classifier.Recognition;
+import com.mushroom_classifier.myapp.LibraryHelper;
+import com.mushroom_classifier.myapp.SelfDialog;
 
 public abstract class CameraActivity extends AppCompatActivity
         implements OnImageAvailableListener,
@@ -100,6 +105,8 @@ public abstract class CameraActivity extends AppCompatActivity
             recognition2ValueTextView,
             recognition3ValueTextView,
             recognition4ValueTextView;
+    protected  TextView[] recognitionTextViews;
+    protected  TextView[] recognitionValueTextViews;
 /*    protected TextView frameValueTextView,
             cropValueTextView,
             cameraResolutionTextView,
@@ -118,6 +125,7 @@ public abstract class CameraActivity extends AppCompatActivity
     private java.util.TreeMap<String, Float> observedMushrooms;
     private boolean isStart = false;
     private int frameCounter = 0;
+    private LibraryHelper library;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -196,6 +204,7 @@ public abstract class CameraActivity extends AppCompatActivity
                     public void onSlide(@NonNull View bottomSheet, float slideOffset) {}
                 });
 
+/*
         recognitionTextView = findViewById(R.id.detected_item);
         recognitionValueTextView = findViewById(R.id.detected_item_value);
         recognition1TextView = findViewById(R.id.detected_item1);
@@ -206,8 +215,25 @@ public abstract class CameraActivity extends AppCompatActivity
         recognition3ValueTextView = findViewById(R.id.detected_item3_value);
         recognition4TextView = findViewById(R.id.detected_item4);
         recognition4ValueTextView = findViewById(R.id.detected_item4_value);
+*/
+        recognitionTextViews = new TextView[5];
+        recognitionValueTextViews = new TextView[5];
+        recognitionTextViews[0] = findViewById(R.id.detected_item);
+        recognitionValueTextViews[0] = findViewById(R.id.detected_item_value);
+        recognitionTextViews[1] = findViewById(R.id.detected_item1);
+        recognitionValueTextViews[1] = findViewById(R.id.detected_item1_value);
+        recognitionTextViews[2] = findViewById(R.id.detected_item2);
+        recognitionValueTextViews[2] = findViewById(R.id.detected_item2_value);
+        recognitionTextViews[3] = findViewById(R.id.detected_item3);
+        recognitionValueTextViews[3] = findViewById(R.id.detected_item3_value);
+        recognitionTextViews[4] = findViewById(R.id.detected_item4);
+        recognitionValueTextViews[4] = findViewById(R.id.detected_item4_value);
 
-        recognition1TextView.setOnLongClickListener(this);
+        for (int idx = 0; idx < 5; ++idx) {
+            recognitionTextViews[idx].setOnLongClickListener(this);
+        }
+
+        //recognition1TextView.setOnLongClickListener(this);
 
         //frameValueTextView = findViewById(R.id.frame_info);
         //cropValueTextView = findViewById(R.id.crop_info);
@@ -225,6 +251,9 @@ public abstract class CameraActivity extends AppCompatActivity
 
         model = Model.valueOf(modelSpinner.getSelectedItem().toString().toUpperCase());
         //device = Device.valueOf(deviceSpinner.getSelectedItem().toString());
+
+        library = new LibraryHelper(this);
+        library.openDatabase();
     }
 
     protected int[] getRgbBytes() {
@@ -240,10 +269,6 @@ public abstract class CameraActivity extends AppCompatActivity
         return yuvBytes[0];
     }
 
-    @Override
-    public boolean onLongClick(View v) {
-        return true;
-    }
 
     /** Callback for android.hardware.Camera API */
     @Override
@@ -549,6 +574,20 @@ public abstract class CameraActivity extends AppCompatActivity
 
     @UiThread void updateResultsInBottomSheet(List<Recognition> results) {
         if (results != null && results.size() >= 5) {
+            for (int idx = 0; idx < 5; ++idx) {
+                Recognition recognition = results.get(idx);
+                if (recognition.getTitle() != null) recognitionTextViews[idx].setText(recognition.getTitle());
+                if (recognition.getConfidence() != null) {
+                    recognitionValueTextViews[idx].setText(
+                            String.format("%d", (int)(100 * recognition.getConfidence())));
+                }
+                if (recognition.getTitle() != null && recognition.getConfidence() != null) {
+                    float score = observedMushrooms.containsKey(recognition.getTitle()) ? observedMushrooms.get(recognition.getTitle()) : 0;
+                    score += recognition.getConfidence();
+                    observedMushrooms.put(recognition.getTitle(), score);
+                }
+            }
+            /*
             Recognition recognition = results.get(0);
             if (recognition != null) {
                 if (recognition.getTitle() != null) recognitionTextView.setText(recognition.getTitle());
@@ -615,6 +654,7 @@ public abstract class CameraActivity extends AppCompatActivity
                     observedMushrooms.put(recognition4.getTitle(), score);
                 }
             }
+            */
         }
     }
 
@@ -746,6 +786,59 @@ public abstract class CameraActivity extends AppCompatActivity
             }
 
         }
+    }
+
+    private int getTextViewIdx(View v) {
+        int idx = -1;
+        switch (v.getId()) {
+            case R.id.detected_item:{
+                idx = 0;
+                break;
+            }
+            case R.id.detected_item1:{
+                idx = 1;
+                break;
+            }
+            case R.id.detected_item2:{
+                idx = 2;
+                break;
+            }
+            case R.id.detected_item3:{
+                idx = 3;
+                break;
+            }
+            case R.id.detected_item4:{
+                idx = 4;
+                break;
+            }
+            default: {
+                idx = -1;
+                break;
+            }
+        }
+        return idx;
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        int textViewIdx = getTextViewIdx(v);
+        String cat_name = recognitionTextViews[textViewIdx].getText().toString();
+        CategoryInfo cat_info = library.gainData(cat_name);
+        SelfDialog info_dialog = new SelfDialog(this);
+
+        info_dialog.setTitle(cat_name);
+        info_dialog.setMessage(cat_info.info);
+
+        info_dialog.setCancelable(true);
+        info_dialog.setReturnOnclickListener("Return", new SelfDialog.onYesOnclickListener() {
+            @Override
+            public void onYesClick() {
+                info_dialog.dismiss();
+            }
+        });
+        info_dialog.show();
+        info_dialog.setImage(cat_info.image);
+        return true;
     }
 
     @Override

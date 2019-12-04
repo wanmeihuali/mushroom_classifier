@@ -4,37 +4,125 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteException;
 
 import android.content.Context;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.io.File;
 import com.mushroom_classifier.myapp.CategoryInfo;
 
 class LibraryHelper extends SQLiteOpenHelper {
     private final static int VERSION = 1;
+    private final static String DATABASE_PATH = "/data/data/com.mushroom_classifier.myapp/databases/";
+    private static final String DATABASE_NAME = "fungi.db";
+    private Context myContext;
+    private SQLiteDatabase myDataBase;
 
+    public LibraryHelper(Context context) throws SQLException {
+        super(context, DATABASE_NAME, null, VERSION);
+        myContext = context;
+    }
 
-    public LibraryHelper(Context context) throws SQLException{
-        //require a Context, Path.getLibraryPath() return the absolute path of db file.
-        super(context, "fungi.db", null, VERSION);
+    private void copyDataBase() throws IOException
+    {
+
+        InputStream mInput = myContext.getAssets().open(DATABASE_NAME);
+        String outFileName = DATABASE_PATH + DATABASE_NAME;
+        OutputStream mOutput = new FileOutputStream(outFileName);
+        byte[] mBuffer = new byte[2024];
+        int mLength;
+        while ((mLength = mInput.read(mBuffer)) > 0) {
+            mOutput.write(mBuffer, 0, mLength);
+        }
+        mOutput.flush();
+        mOutput.close();
+        mInput.close();
+    }
+
+    public void createDatabase() throws IOException
+    {
+
+        boolean dbExist1 = checkDataBase();
+        if(!dbExist1)
+        {
+            this.getReadableDatabase();
+            try
+            {
+                this.close();
+                copyDataBase();
+            }
+            catch (IOException e)
+            {
+                throw new Error("Error copying database");
+            }
+        }
+
+    }
+    public void db_delete()
+    {
+        File file = new File(DATABASE_PATH + DATABASE_NAME);
+        if(file.exists())
+        {
+            file.delete();
+            System.out.println("delete database file.");
+        }
+    }
+    //Open database
+    public void openDatabase() throws SQLException
+    {
+        try {
+            copyDataBase();
+        } catch (IOException e){
+
+        }
+        String myPath = DATABASE_PATH + DATABASE_NAME;
+        myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
+    }
+
+    public synchronized void closeDataBase()throws SQLException
+    {
+        if(myDataBase != null)
+            myDataBase.close();
+        super.close();
+    }
+    private boolean checkDataBase()
+    {
+        boolean checkDB = false;
+        try
+        {
+            String myPath = DATABASE_PATH + DATABASE_NAME;
+            File dbfile = new File(myPath);
+            checkDB = dbfile.exists();
+        }
+        catch(SQLiteException e)
+        {
+        }
+        return checkDB;
     }
 
     public void execSQL(String sql){
         // query = "UPDATE ..." or "DELETE... "
         try {
-            SQLiteDatabase db = getWritableDatabase();
-            execSQLCmd(db,sql);
+            //SQLiteDatabase myDataBase = getWritableDatabase();
+            execSQLCmd(myDataBase,sql);
         }catch (SQLException e){
             e.printStackTrace();
             throw e;
         }
     }
 
-    public CategoryInfo gainData(String rawQuery){
-        Cursor cursor = execQuery(rawQuery);
+    public CategoryInfo gainData(String cat_name){
+
+        cat_name = cat_name.toLowerCase();
+        String query = "SELECT id, name, info, example_img FROM fungi WHERE name='"+cat_name + "'";
+        Cursor cursor = execQuery(query);
         int cat_id_idx = cursor.getColumnIndex("id");
         int cat_name_idx = cursor.getColumnIndex("name");
         int info_idx = cursor.getColumnIndex("info");
@@ -55,8 +143,8 @@ class LibraryHelper extends SQLiteOpenHelper {
     public Cursor execQuery(String query) throws SQLException{
         // query = "SELECT ... FROM ..."
         try {
-            SQLiteDatabase db = getReadableDatabase();
-            return db.rawQuery(query, null);
+            // SQLiteDatabase db = getReadableDatabase();
+            return myDataBase.rawQuery(query, null);
         }catch (SQLException e){
             e.printStackTrace();
             throw e;

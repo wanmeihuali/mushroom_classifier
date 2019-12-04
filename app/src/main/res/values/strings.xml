@@ -24,4 +24,6 @@
     </string-array>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
+    <string name="mushroom_img">The Image for the mushroom</string>
+    <string name="back">Back</string>
 </resources>
