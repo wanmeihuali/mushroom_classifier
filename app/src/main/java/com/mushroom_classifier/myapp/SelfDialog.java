@@ -122,14 +122,17 @@ public class SelfDialog extends Dialog {
         imageV = findViewById(R.id.exampleimg);
         if (imageBytes != null)
         {
-            Bitmap bmp = convertByteArrayToBitmap(imageBytes);
+            Bitmap bmp =   convertByteArrayToBitmap(imageBytes);
             imageV.setImageBitmap(bmp);
         }
+
     }
+
     private Bitmap convertByteArrayToBitmap(byte[] bytes) {
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 
+    
     /**
      * 设置确定按钮和取消被点击的接口
      */
