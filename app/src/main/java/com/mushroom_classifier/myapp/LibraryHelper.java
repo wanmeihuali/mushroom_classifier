@@ -172,18 +172,6 @@ class LibraryHelper extends SQLiteOpenHelper {
         //not used right now
     }
 
-    /*
-    // open  'init.sql' file stored in assets folder
-    private static InputStream getInitScript(){
-        try {
-            return CodeRunTime.getContext().getAssets().open("init.sql");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-    */
-
     // work with special db object
     private static void execSQLCmd(SQLiteDatabase db,String str){
         String[] cmds = str.split(";");
