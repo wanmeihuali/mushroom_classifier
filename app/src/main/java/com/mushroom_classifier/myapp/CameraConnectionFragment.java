@@ -59,7 +59,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-import org.tensorflow.lite.examples.classification.customview.AutoFitTextureView;
+import com.mushroom_classifier.myapp.customview.AutoFitTextureView;
 import com.mushroom_classifier.myapp.env.Logger;
 
 public class CameraConnectionFragment extends Fragment {

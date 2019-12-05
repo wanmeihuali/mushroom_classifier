@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.tensorflow.lite.examples.classification.customview;
+package com.mushroom_classifier.myapp.customview;
 
 import android.content.Context;
 import android.util.AttributeSet;

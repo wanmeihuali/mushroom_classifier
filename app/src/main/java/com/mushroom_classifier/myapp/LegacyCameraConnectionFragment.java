@@ -33,7 +33,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import java.io.IOException;
 import java.util.List;
-import org.tensorflow.lite.examples.classification.customview.AutoFitTextureView;
+import com.mushroom_classifier.myapp.customview.AutoFitTextureView;
 import com.mushroom_classifier.myapp.env.ImageUtils;
 import com.mushroom_classifier.myapp.env.Logger;
 

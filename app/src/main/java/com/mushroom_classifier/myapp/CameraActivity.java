@@ -95,28 +95,11 @@ public abstract class CameraActivity extends AppCompatActivity
     private LinearLayout bottomSheetLayout;
     private LinearLayout gestureLayout;
     private BottomSheetBehavior sheetBehavior;
-    protected TextView recognitionTextView,
-            recognition1TextView,
-            recognition2TextView,
-            recognition3TextView,
-            recognition4TextView,
-            recognitionValueTextView,
-            recognition1ValueTextView,
-            recognition2ValueTextView,
-            recognition3ValueTextView,
-            recognition4ValueTextView;
     protected  TextView[] recognitionTextViews;
     protected  TextView[] recognitionValueTextViews;
-/*    protected TextView frameValueTextView,
-            cropValueTextView,
-            cameraResolutionTextView,
-            rotationTextView,
-            inferenceTimeTextView;*/
+
     protected ImageView bottomSheetArrowImageView;
-    //private ImageView plusImageView, minusImageView;
     private Spinner modelSpinner;
-    //private Spinner deviceSpinner;
-    //private TextView threadsTextView;
     private Button startButton;
 
     private Model model = Model.QUANTIZED;
@@ -134,10 +117,6 @@ public abstract class CameraActivity extends AppCompatActivity
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.activity_camera);
-        // Toolbar toolbar = findViewById(R.id.toolbar);
-        // setSupportActionBar(toolbar);
-        // getSupportActionBar().setDisplayShowTitleEnabled(false);
-
         if (hasPermission()) {
             setFragment();
         } else {
@@ -146,11 +125,7 @@ public abstract class CameraActivity extends AppCompatActivity
 
         isStart = false;
 
-        //threadsTextView = findViewById(R.id.threads);
-        //plusImageView = findViewById(R.id.plus);
-        //minusImageView = findViewById(R.id.minus);
         modelSpinner = findViewById(R.id.model_spinner);
-        //deviceSpinner = findViewById(R.id.device_spinner);
         bottomSheetLayout = findViewById(R.id.bottom_sheet_layout);
         gestureLayout = findViewById(R.id.gesture_layout);
         sheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
@@ -204,18 +179,6 @@ public abstract class CameraActivity extends AppCompatActivity
                     public void onSlide(@NonNull View bottomSheet, float slideOffset) {}
                 });
 
-/*
-        recognitionTextView = findViewById(R.id.detected_item);
-        recognitionValueTextView = findViewById(R.id.detected_item_value);
-        recognition1TextView = findViewById(R.id.detected_item1);
-        recognition1ValueTextView = findViewById(R.id.detected_item1_value);
-        recognition2TextView = findViewById(R.id.detected_item2);
-        recognition2ValueTextView = findViewById(R.id.detected_item2_value);
-        recognition3TextView = findViewById(R.id.detected_item3);
-        recognition3ValueTextView = findViewById(R.id.detected_item3_value);
-        recognition4TextView = findViewById(R.id.detected_item4);
-        recognition4ValueTextView = findViewById(R.id.detected_item4_value);
-*/
         recognitionTextViews = new TextView[5];
         recognitionValueTextViews = new TextView[5];
         recognitionTextViews[0] = findViewById(R.id.detected_item);
@@ -233,24 +196,12 @@ public abstract class CameraActivity extends AppCompatActivity
             recognitionTextViews[idx].setOnLongClickListener(this);
         }
 
-        //recognition1TextView.setOnLongClickListener(this);
-
-        //frameValueTextView = findViewById(R.id.frame_info);
-        //cropValueTextView = findViewById(R.id.crop_info);
-        //cameraResolutionTextView = findViewById(R.id.view_info);
-        //rotationTextView = findViewById(R.id.rotation_info);
-        //inferenceTimeTextView = findViewById(R.id.inference_info);
 
         modelSpinner.setOnItemSelectedListener(this);
-        //deviceSpinner.setOnItemSelectedListener(this);
-
-        //plusImageView.setOnClickListener(this);
-        //minusImageView.setOnClickListener(this);
         startButton.setOnClickListener(this);
 
 
         model = Model.valueOf(modelSpinner.getSelectedItem().toString().toUpperCase());
-        //device = Device.valueOf(deviceSpinner.getSelectedItem().toString());
 
         library = new LibraryHelper(this);
         library.openDatabase();
@@ -518,13 +469,10 @@ public abstract class CameraActivity extends AppCompatActivity
         if (useCamera2API) {
             CameraConnectionFragment camera2Fragment =
                     CameraConnectionFragment.newInstance(
-                            new CameraConnectionFragment.ConnectionCallback() {
-                                @Override
-                                public void onPreviewSizeChosen(final Size size, final int rotation) {
-                                    previewHeight = size.getHeight();
-                                    previewWidth = size.getWidth();
-                                    CameraActivity.this.onPreviewSizeChosen(size, rotation);
-                                }
+                            (final Size size, final int rotation)->{
+                                previewHeight = size.getHeight();
+                                previewWidth = size.getWidth();
+                                CameraActivity.this.onPreviewSizeChosen(size, rotation);
                             },
                             this,
                             getLayoutId(),
@@ -567,6 +515,8 @@ public abstract class CameraActivity extends AppCompatActivity
                 return 180;
             case Surface.ROTATION_90:
                 return 90;
+            case Surface.ROTATION_0:
+                return 0;
             default:
                 return 0;
         }
@@ -581,80 +531,14 @@ public abstract class CameraActivity extends AppCompatActivity
                     recognitionValueTextViews[idx].setText(
                             String.format("%d", (int)(100 * recognition.getConfidence())));
                 }
-                if (recognition.getTitle() != null && recognition.getConfidence() != null) {
-                    float score = observedMushrooms.containsKey(recognition.getTitle()) ? observedMushrooms.get(recognition.getTitle()) : 0;
+
+                String title = recognition.getTitle();
+                if (title != null && recognition.getConfidence() != null) {
+                    float score = observedMushrooms.containsKey(recognition.getTitle()) ? observedMushrooms.get(title) : 0;
                     score += recognition.getConfidence();
                     observedMushrooms.put(recognition.getTitle(), score);
                 }
             }
-            /*
-            Recognition recognition = results.get(0);
-            if (recognition != null) {
-                if (recognition.getTitle() != null) recognitionTextView.setText(recognition.getTitle());
-                if (recognition.getConfidence() != null) {
-                    recognitionValueTextView.setText(
-                            String.format("%d", (int)(100 * recognition.getConfidence())));
-                }
-                if (recognition.getTitle() != null && recognition.getConfidence() != null) {
-                    float score = observedMushrooms.containsKey(recognition.getTitle()) ? observedMushrooms.get(recognition.getTitle()) : 0;
-                    score += recognition.getConfidence();
-                    observedMushrooms.put(recognition.getTitle(), score);
-                }
-            }
-
-            Recognition recognition1 = results.get(1);
-            if (recognition1 != null) {
-                if (recognition1.getTitle() != null) recognition1TextView.setText(recognition1.getTitle());
-                if (recognition1.getConfidence() != null)
-                    recognition1ValueTextView.setText(
-                            String.format("%d", (int)(100 * recognition1.getConfidence())));
-                if (recognition1.getTitle() != null && recognition1.getConfidence() != null) {
-                    float score = observedMushrooms.containsKey(recognition1.getTitle()) ? observedMushrooms.get(recognition1.getTitle()) : 0;
-                    score += recognition1.getConfidence();
-                    observedMushrooms.put(recognition1.getTitle(), score);
-                }
-            }
-
-            Recognition recognition2 = results.get(2);
-            if (recognition2 != null) {
-                if (recognition2.getTitle() != null) recognition2TextView.setText(recognition2.getTitle());
-                if (recognition2.getConfidence() != null)
-                    recognition2ValueTextView.setText(
-                            String.format("%d", (int)(100 * recognition2.getConfidence())));
-                if (recognition2.getTitle() != null && recognition2.getConfidence() != null) {
-                    float score = observedMushrooms.containsKey(recognition2.getTitle()) ? observedMushrooms.get(recognition2.getTitle()) : 0;
-                    score += recognition2.getConfidence();
-                    observedMushrooms.put(recognition2.getTitle(), score);
-                }
-            }
-
-            Recognition recognition3 = results.get(3);
-            if (recognition3 != null) {
-                if (recognition3.getTitle() != null) recognition3TextView.setText(recognition3.getTitle());
-                if (recognition3.getConfidence() != null)
-                    recognition3ValueTextView.setText(
-                            String.format("%d", (int)(100 * recognition3.getConfidence())));
-                if (recognition3.getTitle() != null && recognition3.getConfidence() != null) {
-                    float score = observedMushrooms.containsKey(recognition3.getTitle()) ? observedMushrooms.get(recognition3.getTitle()) : 0;
-                    score += recognition3.getConfidence();
-                    observedMushrooms.put(recognition3.getTitle(), score);
-                }
-            }
-
-            Recognition recognition4 = results.get(4);
-            if (recognition4 != null) {
-                if (recognition4.getTitle() != null)
-                    recognition4TextView.setText(recognition4.getTitle());
-                if (recognition4.getConfidence() != null)
-                    recognition4ValueTextView.setText(
-                            String.format("%d", (int)(100 * recognition4.getConfidence())));
-                if (recognition4.getTitle() != null && recognition4.getConfidence() != null) {
-                    float score = observedMushrooms.containsKey(recognition4.getTitle()) ? observedMushrooms.get(recognition4.getTitle()) : 0;
-                    score += recognition4.getConfidence();
-                    observedMushrooms.put(recognition4.getTitle(), score);
-                }
-            }
-            */
         }
     }
 
@@ -663,26 +547,6 @@ public abstract class CameraActivity extends AppCompatActivity
          if (isStart) {
              updateResultsInBottomSheet(results);
          }
-    }
-
-    protected void showFrameInfo(String frameInfo) {
-        // frameValueTextView.setText(frameInfo);
-    }
-
-    protected void showCropInfo(String cropInfo) {
-        // cropValueTextView.setText(cropInfo);
-    }
-
-    protected void showCameraResolution(String cameraInfo) {
-        // cameraResolutionTextView.setText(cameraInfo);
-    }
-
-    protected void showRotationInfo(String rotation) {
-        // rotationTextView.setText(rotation);
-    }
-
-    protected void showInference(String inferenceTime) {
-        // inferenceTimeTextView.setText(inferenceTime);
     }
 
     protected Model getModel() {
@@ -701,29 +565,8 @@ public abstract class CameraActivity extends AppCompatActivity
         return device;
     }
 
-    private void setDevice(Device device) {
-
-        if (this.device != device) {
-            LOGGER.d("Updating  device: " + device);
-            this.device = device;
-            final boolean threadsEnabled = device == Device.CPU;
-            //plusImageView.setEnabled(threadsEnabled);
-            //minusImageView.setEnabled(threadsEnabled);
-            //threadsTextView.setText(threadsEnabled ? String.valueOf(numThreads) : "N/A");
-            onInferenceConfigurationChanged();
-        }
-    }
-
     protected int getNumThreads() {
         return numThreads;
-    }
-
-    private void setNumThreads(int numThreads) {
-        if (this.numThreads != numThreads) {
-            LOGGER.d("Updating  numThreads: " + numThreads);
-            this.numThreads = numThreads;
-            onInferenceConfigurationChanged();
-        }
     }
 
     protected abstract void processImage();
@@ -738,22 +581,6 @@ public abstract class CameraActivity extends AppCompatActivity
 
     @Override
     public void onClick(View v) {
-        /*
-        if (v.getId() == R.id.plus) {
-            String threads = threadsTextView.getText().toString().trim();
-            int numThreads = Integer.parseInt(threads);
-            if (numThreads >= 9) return;
-            setNumThreads(++numThreads);
-            threadsTextView.setText(String.valueOf(numThreads));
-        } else if (v.getId() == R.id.minus) {
-            String threads = threadsTextView.getText().toString().trim();
-            int numThreads = Integer.parseInt(threads);
-            if (numThreads == 1) {
-                return;
-            }
-            setNumThreads(--numThreads);
-            threadsTextView.setText(String.valueOf(numThreads));
-        } else */
         if (v.getId() == R.id.start_button) {
             if (isStart) {  // stop is pressed
                 isStart = false;
@@ -761,13 +588,7 @@ public abstract class CameraActivity extends AppCompatActivity
                 PriorityQueue<Recognition> pq =
                         new PriorityQueue<>(
                                 5,
-                                new Comparator<Recognition>() {
-                                    @Override
-                                    public int compare(Recognition lhs, Recognition rhs) {
-                                        // Intentionally reversed to put high confidence at the head of the queue.
-                                        return Float.compare(rhs.getConfidence(), lhs.getConfidence());
-                                    }
-                                });
+                                (Recognition lhs, Recognition rhs)->Float.compare(rhs.getConfidence(), lhs.getConfidence()));
 
                 for (Map.Entry<String, Float> entry : observedMushrooms.entrySet()) {
                     pq.add(new Recognition("" + entry.getKey(), entry.getKey(), entry.getValue(), null));
@@ -812,7 +633,6 @@ public abstract class CameraActivity extends AppCompatActivity
                 break;
             }
             default: {
-                idx = -1;
                 break;
             }
         }
@@ -830,12 +650,10 @@ public abstract class CameraActivity extends AppCompatActivity
         info_dialog.setMessage(cat_info.info);
 
         info_dialog.setCancelable(true);
-        info_dialog.setReturnOnclickListener("Return", new SelfDialog.onYesOnclickListener() {
-            @Override
-            public void onYesClick() {
-                info_dialog.dismiss();
-            }
-        });
+        info_dialog.setReturnOnclickListener(
+                "Return",
+            info_dialog::dismiss
+        );
         info_dialog.show();
         info_dialog.setImage(cat_info.image);
         return true;
@@ -846,9 +664,6 @@ public abstract class CameraActivity extends AppCompatActivity
         if (parent == modelSpinner) {
             setModel(Model.valueOf(parent.getItemAtPosition(pos).toString().toUpperCase()));
         }
-/*        else if (parent == deviceSpinner) {
-            setDevice(Device.valueOf(parent.getItemAtPosition(pos).toString()));
-        }*/
     }
 
     @Override
