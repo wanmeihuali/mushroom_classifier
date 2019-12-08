@@ -40,7 +40,7 @@ public class ClassifierFloatMobileNet extends Classifier {
   /**
    * Initializes a {@code ClassifierFloatMobileNet}.
    *
-   * @param activity
+   * @param activity the main activity
    */
   public ClassifierFloatMobileNet(Activity activity, Device device, int numThreads)
       throws IOException {
@@ -52,7 +52,8 @@ public class ClassifierFloatMobileNet extends Classifier {
     // you can download this file from
     // see build.gradle for where to obtain this file. It should be auto
     // downloaded into assets.
-    return "mobilenet100.tflite";
+    // return "mobilenet100.tflite";
+    return "converted_inception_model.tflite";
   }
 
   @Override
