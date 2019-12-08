@@ -20,7 +20,6 @@ import com.mushroom_classifier.myapp.CategoryInfo;
 
 class LibraryHelper extends SQLiteOpenHelper {
     private final static int VERSION = 1;
-    private final static String DATABASE_PATH = "/data/data/com.mushroom_classifier.myapp/databases/";
     private static final String DATABASE_NAME = "fungi.db";
     private Context myContext;
     private SQLiteDatabase myDataBase;
@@ -34,7 +33,8 @@ class LibraryHelper extends SQLiteOpenHelper {
     {
 
         InputStream mInput = myContext.getAssets().open(DATABASE_NAME);
-        String outFileName = DATABASE_PATH + DATABASE_NAME;
+
+        String outFileName = myContext.getFilesDir()+ DATABASE_NAME;
         OutputStream mOutput = new FileOutputStream(outFileName);
         byte[] mBuffer = new byte[2024];
         int mLength;
@@ -67,7 +67,7 @@ class LibraryHelper extends SQLiteOpenHelper {
     }
     public void db_delete()
     {
-        File file = new File(DATABASE_PATH + DATABASE_NAME);
+        File file = new File(myContext.getFilesDir() + DATABASE_NAME);
         if(file.exists())
         {
             file.delete();
@@ -82,7 +82,7 @@ class LibraryHelper extends SQLiteOpenHelper {
         } catch (IOException e){
 
         }
-        String myPath = DATABASE_PATH + DATABASE_NAME;
+        String myPath = myContext.getFilesDir() + DATABASE_NAME;
         myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
     }
 
@@ -97,7 +97,7 @@ class LibraryHelper extends SQLiteOpenHelper {
         boolean checkDB = false;
         try
         {
-            String myPath = DATABASE_PATH + DATABASE_NAME;
+            String myPath = myContext.getFilesDir() + DATABASE_NAME;
             File dbfile = new File(myPath);
             checkDB = dbfile.exists();
         }
