@@ -28,7 +28,7 @@
             android:src="@drawable/icn_chevron_up" />
 
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -39,19 +39,30 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/black"
+                android:gravity="center"
+                android:layout_alignParentStart="true"
                 android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/detected_item_value"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="right"
+                android:gravity="center"
+                android:layout_toStartOf="@id/view_cat_info_button"
                 android:textColor="@android:color/black"
                 android:textSize="16sp" />
 
-        </LinearLayout>
+            <Button
+                android:id="@+id/view_cat_info_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_alignParentEnd="true"
+                android:text="@string/view_info" />
 
-        <LinearLayout
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -61,20 +72,31 @@
                 android:id="@+id/detected_item1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="12sp" />
+                android:textColor="@android:color/black"
+                android:gravity="center"
+                android:layout_alignParentStart="true"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/detected_item1_value"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="right"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="12sp" />
+                android:gravity="center"
+                android:layout_toStartOf="@id/view_cat_info_button1"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
 
-        </LinearLayout>
+            <Button
+                android:id="@+id/view_cat_info_button1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_alignParentEnd="true"
+                android:text="@string/view_info" />
 
-        <LinearLayout
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -84,20 +106,31 @@
                 android:id="@+id/detected_item2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="12sp" />
+                android:textColor="@android:color/black"
+                android:gravity="center"
+                android:layout_alignParentStart="true"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/detected_item2_value"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="right"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="12sp" />
+                android:gravity="center"
+                android:layout_toStartOf="@id/view_cat_info_button2"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
 
-        </LinearLayout>
+            <Button
+                android:id="@+id/view_cat_info_button2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_alignParentEnd="true"
+                android:text="@string/view_info" />
 
-        <LinearLayout
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -107,20 +140,31 @@
                 android:id="@+id/detected_item3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="12sp" />
+                android:textColor="@android:color/black"
+                android:gravity="center"
+                android:layout_alignParentStart="true"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/detected_item3_value"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="right"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="12sp" />
+                android:gravity="center"
+                android:layout_toStartOf="@id/view_cat_info_button3"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
 
-        </LinearLayout>
+            <Button
+                android:id="@+id/view_cat_info_button3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_alignParentEnd="true"
+                android:text="@string/view_info" />
 
-        <LinearLayout
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -130,18 +174,29 @@
                 android:id="@+id/detected_item4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="12sp" />
+                android:textColor="@android:color/black"
+                android:gravity="center"
+                android:layout_alignParentStart="true"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/detected_item4_value"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="right"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="12sp" />
+                android:gravity="center"
+                android:layout_toStartOf="@id/view_cat_info_button4"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
 
-        </LinearLayout>
+            <Button
+                android:id="@+id/view_cat_info_button4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_alignParentEnd="true"
+                android:text="@string/view_info" />
+
+        </RelativeLayout>
 
         <View
             android:layout_width="match_parent"

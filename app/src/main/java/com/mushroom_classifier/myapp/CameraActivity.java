@@ -74,7 +74,6 @@ public abstract class CameraActivity extends AppCompatActivity
         implements OnImageAvailableListener,
         Camera.PreviewCallback,
         View.OnClickListener,
-        View.OnLongClickListener,
         AdapterView.OnItemSelectedListener {
     private static final Logger LOGGER = new Logger();
 
@@ -101,6 +100,11 @@ public abstract class CameraActivity extends AppCompatActivity
     protected ImageView bottomSheetArrowImageView;
     private Spinner modelSpinner;
     private Button startButton;
+    private Button viewInfoButton0;
+    private Button viewInfoButton1;
+    private Button viewInfoButton2;
+    private Button viewInfoButton3;
+    private Button viewInfoButton4;
 
     private Model model = Model.QUANTIZED;
     private Device device = Device.CPU;
@@ -131,6 +135,11 @@ public abstract class CameraActivity extends AppCompatActivity
         sheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
         bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
         startButton = findViewById(R.id.start_button);
+        viewInfoButton0 = findViewById(R.id.view_cat_info_button);
+        viewInfoButton1 = findViewById(R.id.view_cat_info_button1);
+        viewInfoButton2 = findViewById(R.id.view_cat_info_button2);
+        viewInfoButton3 = findViewById(R.id.view_cat_info_button3);
+        viewInfoButton4 = findViewById(R.id.view_cat_info_button4);
 
         ViewTreeObserver vto = gestureLayout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(
@@ -192,14 +201,16 @@ public abstract class CameraActivity extends AppCompatActivity
         recognitionTextViews[4] = findViewById(R.id.detected_item4);
         recognitionValueTextViews[4] = findViewById(R.id.detected_item4_value);
 
-        for (int idx = 0; idx < 5; ++idx) {
-            recognitionTextViews[idx].setOnLongClickListener(this);
-        }
+
 
 
         modelSpinner.setOnItemSelectedListener(this);
         startButton.setOnClickListener(this);
-
+        viewInfoButton0.setOnClickListener(this);
+        viewInfoButton1.setOnClickListener(this);
+        viewInfoButton2.setOnClickListener(this);
+        viewInfoButton3.setOnClickListener(this);
+        viewInfoButton4.setOnClickListener(this);
 
         model = Model.valueOf(modelSpinner.getSelectedItem().toString().toUpperCase());
 
@@ -606,29 +617,47 @@ public abstract class CameraActivity extends AppCompatActivity
                 startButton.setText((R.string.stop));
             }
 
+        } else {
+            int button_idx = getButtonIdx(v);
+            if (getButtonIdx(v) != -1) {
+                String cat_name = recognitionTextViews[button_idx].getText().toString();
+                CategoryInfo cat_info = library.gainData(cat_name);
+                SelfDialog info_dialog = new SelfDialog(this);
+
+                info_dialog.setTitle(cat_name);
+                info_dialog.setMessage(cat_info.info);
+
+                info_dialog.setCancelable(true);
+                info_dialog.setReturnOnclickListener(
+                        "Return",
+                        info_dialog::dismiss
+                );
+                info_dialog.show();
+                info_dialog.setImage(cat_info.image);
+            }
         }
     }
 
-    private int getTextViewIdx(View v) {
+    private int getButtonIdx(View v) {
         int idx = -1;
         switch (v.getId()) {
-            case R.id.detected_item:{
+            case R.id.view_cat_info_button:{
                 idx = 0;
                 break;
             }
-            case R.id.detected_item1:{
+            case R.id.view_cat_info_button1:{
                 idx = 1;
                 break;
             }
-            case R.id.detected_item2:{
+            case R.id.view_cat_info_button2:{
                 idx = 2;
                 break;
             }
-            case R.id.detected_item3:{
+            case R.id.view_cat_info_button3:{
                 idx = 3;
                 break;
             }
-            case R.id.detected_item4:{
+            case R.id.view_cat_info_button4:{
                 idx = 4;
                 break;
             }
@@ -638,7 +667,7 @@ public abstract class CameraActivity extends AppCompatActivity
         }
         return idx;
     }
-
+/*
     @Override
     public boolean onLongClick(View v) {
         int textViewIdx = getTextViewIdx(v);
@@ -658,7 +687,7 @@ public abstract class CameraActivity extends AppCompatActivity
         info_dialog.setImage(cat_info.image);
         return true;
     }
-
+*/
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         if (parent == modelSpinner) {

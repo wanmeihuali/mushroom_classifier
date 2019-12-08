@@ -26,4 +26,5 @@
     <string name="stop">Stop</string>
     <string name="mushroom_img">The Image for the mushroom</string>
     <string name="back">Back</string>
+    <string name="view_info">View Info</string>
 </resources>
