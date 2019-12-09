@@ -9,6 +9,8 @@ Inference is performed using the TensorFlow Lite Java API.
 For an explanation of the original tensorflow example, see
 [TensorFlow Lite Android image classification example](https://www.tensorflow.org/lite/models/image_classification/android).
 
+This is also my first andriod app. So, do not expect too much.
+
 <!-- TODO(b/124116863): Add app screenshot. -->
 
 ## Requirements
