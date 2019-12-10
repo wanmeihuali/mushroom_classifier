@@ -6,9 +6,10 @@ This is the final project for COMP 576 at Rice University. It is modified from t
 on Android. It uses an inception model to continuously classify the mushroom it sees from the device's back camera.
 Inference is performed using the TensorFlow Lite Java API. 
 
-These instructions walk you through building and
-running the demo on an Android device. For an explanation of the source, see
+For an explanation of the original tensorflow example, see
 [TensorFlow Lite Android image classification example](https://www.tensorflow.org/lite/models/image_classification/android).
+
+This is also my first andriod app. So, do not expect too much.
 
 <!-- TODO(b/124116863): Add app screenshot. -->
 
