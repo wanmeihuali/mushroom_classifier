@@ -11,7 +11,13 @@ For an explanation of the original tensorflow example, see
 
 This is also my first andriod app. So, do not expect too much.
 
-<!-- TODO(b/124116863): Add app screenshot. -->
+## demo for the app:
+### do classification:
+<img src="https://github.com/wanmeihuali/mushroom_classifier/raw/master/images/app_demo1.jpg" width = "300" alt="app demo 1" align=center />
+
+### show fungi information:
+<img src="https://github.com/wanmeihuali/mushroom_classifier/raw/master/images/app_demo2.jpg" width = "300" alt="app demo 2" align=center />
+
 
 ## Requirements
 
