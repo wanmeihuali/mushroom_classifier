@@ -7,7 +7,7 @@ on Android. It uses an inception model to continuously classify the mushroom it 
 Inference is performed using the TensorFlow Lite Java API. 
 
 For an explanation of the original tensorflow example, see
-[TensorFlow Lite Android image classification example](https://www.tensorflow.org/lite/models/image_classification/android).
+[TensorFlow Lite Android image classification example](https://github.com/tensorflow/examples/tree/master/lite/examples/image_classification/android).
 
 This is also my first andriod app. So, do not expect too much.
 
